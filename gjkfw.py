@@ -94,9 +94,12 @@ def main():
                     input_string += '9'
                     pressed_button = '9'
                 elif 350 <= mouse_x <= 400 and 150 <= mouse_y <= 230:
-                    input_string += '/'
+                    if input_string and input_string[-1] not in '+-*/²√(':  # Проверка на последнюю операцию
+                        input_string += '/'
                     pressed_button = '/'
-                
+                elif 250 <= mouse_x <= 330 and 250 <= mouse_y <= 330:
+                        input_string += '6'  # Просто добавляем 6
+                        pressed_button = '6'
                 elif 50 <= mouse_x <= 130 and 250 <= mouse_y <= 330:
                     input_string += '4'
                     pressed_button = '4'
@@ -104,10 +107,12 @@ def main():
                     input_string += '5'
                     pressed_button = '5'
                 elif 250 <= mouse_x <= 330 and 250 <= mouse_y <= 330:
-                    input_string += '6'
-                    pressed_button = '6'
-                elif 350 <= mouse_x <= 400 and 250 <= mouse_y <= 330:
-                    input_string += '*'
+                        input_string += '6'  # Просто добавляем 6
+                        pressed_button = '6'
+                
+                elif 250 <= mouse_x <= 330 and 250 <= mouse_y <= 330:
+                    if input_string and input_string[-1] not in '+-*/²√(':  # Проверка на последнюю операцию
+                        input_string += '*'
                     pressed_button = '*'
                 
                 elif 50 <= mouse_x <= 130 and 350 <= mouse_y <= 430:
@@ -117,10 +122,8 @@ def main():
                     input_string += '2'
                     pressed_button = '2'
                 elif 250 <= mouse_x <= 330 and 350 <= mouse_y <= 430:
-                    input_string += '3'
-                    pressed_button = '3'
-                elif 350 <= mouse_x <= 400 and 350 <= mouse_y <= 430:
-                    input_string += '-'
+                    if input_string and input_string[-1] not in '+-*/²√(':  # Проверка на последнюю операцию
+                        input_string += '-'
                     pressed_button = '-'
                 
                 elif 150 <= mouse_x <= 230 and 450 <= mouse_y <= 530:
@@ -143,7 +146,8 @@ def main():
                     input_string = ""
                     pressed_button = 'C'
                 elif 250 <= mouse_x <= 330 and 450 <= mouse_y <= 530:  # Кнопка "+"
-                    input_string += '+'
+                    if input_string and input_string[-1] not in '+-*/²√(':  # Проверка на последнюю операцию
+                        input_string += '+'
                     pressed_button = '+'
 
             if event.type == pygame.MOUSEBUTTONUP:

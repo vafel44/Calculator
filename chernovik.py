@@ -119,10 +119,12 @@ def main():
                     input_string += '0'
                     pressed_button = '0'
                 elif 50 <= mouse_x <= 130 and 450 <= mouse_y <= 530:  # Кнопка ²
-                    input_string += '²'  # Добавляем только '²'
+                    if '²' not in input_string:  # Проверяем, есть ли уже '²' в строке
+                        input_string += '²'  # Добавляем только '²'
                     pressed_button = '²'
                 elif 350 <= mouse_x <= 400 and 450 <= mouse_y <= 530:  # Кнопка √
-                    input_string += '√('  # Добавляем '√(' для ввода выражения
+                    if '√' not in input_string:  # Проверяем, есть ли уже '√' в строке
+                        input_string += '√'  # Добавляем только '√' без скобок
                     pressed_button = '√'
                 elif 50 <= mouse_x <= 130 and 550 <= mouse_y <= 630:  # Кнопка "("
                     input_string += '('

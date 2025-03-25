@@ -27,7 +27,7 @@ def draw_buttons(mouse_pos):
         ('0', 150, 450), ('+', 250, 450),  # Кнопка сложения
         ('²', 50, 450), ('√', 350, 450),  # Кнопка возведения в квадрат и корня
         ('(', 50, 550), (')', 150, 550),  # Кнопки для скобок
-        ('C', 250, 550)  # Кнопка "Стереть"
+        ('C', 250, 550), ('=', 350, 550)  # Кнопка "Стереть" и "="
     ]
     for (text, x, y) in buttons:
         button_rect = pygame.Rect(x, y, 80, 80)
@@ -94,9 +94,9 @@ def main():
                     input_string += '9'
                     pressed_button = '9'
                 elif 350 <= mouse_x <= 400 and 150 <= mouse_y <= 230:
-                    input_string += '/'
+                    if input_string and input_string[-1] not in '()':  # Проверка на последнюю операцию
+                        input_string += '/'
                     pressed_button = '/'
-                
                 elif 50 <= mouse_x <= 130 and 250 <= mouse_y <= 330:
                     input_string += '4'
                     pressed_button = '4'
@@ -104,12 +104,8 @@ def main():
                     input_string += '5'
                     pressed_button = '5'
                 elif 250 <= mouse_x <= 330 and 250 <= mouse_y <= 330:
-                    input_string += '6'
+                    input_string += '6'  # Добавляем 6
                     pressed_button = '6'
-                elif 350 <= mouse_x <= 400 and 250 <= mouse_y <= 330:
-                    input_string += '*'
-                    pressed_button = '*'
-                
                 elif 50 <= mouse_x <= 130 and 350 <= mouse_y <= 430:
                     input_string += '1'
                     pressed_button = '1'
@@ -117,21 +113,18 @@ def main():
                     input_string += '2'
                     pressed_button = '2'
                 elif 250 <= mouse_x <= 330 and 350 <= mouse_y <= 430:
-                    input_string += '3'
+                    input_string += '3'  # Добавляем 3
                     pressed_button = '3'
-                elif 350 <= mouse_x <= 400 and 350 <= mouse_y <= 430:
-                    input_string += '-'
-                    pressed_button = '-'
-                
                 elif 150 <= mouse_x <= 230 and 450 <= mouse_y <= 530:
                     input_string += '0'
                     pressed_button = '0'
-                
                 elif 50 <= mouse_x <= 130 and 450 <= mouse_y <= 530:  # Кнопка ²
-                    input_string += '²'  # Добавляем только '²'
+                    if '²' not in input_string:  # Проверяем, есть ли уже '²' в строке
+                        input_string += '²'  # Добавляем только '²'
                     pressed_button = '²'
                 elif 350 <= mouse_x <= 400 and 450 <= mouse_y <= 530:  # Кнопка √
-                    input_string += '√('  # Добавляем '√(' для ввода выражения
+                    if '√' not in input_string:  # Проверяем, есть ли уже '√' в строке
+                        input_string += '√'  # Добавляем только '√' без скобок
                     pressed_button = '√'
                 elif 50 <= mouse_x <= 130 and 550 <= mouse_y <= 630:  # Кнопка "("
                     input_string += '('
@@ -143,13 +136,23 @@ def main():
                     input_string = ""
                     pressed_button = 'C'
                 elif 250 <= mouse_x <= 330 and 450 <= mouse_y <= 530:  # Кнопка "+"
-                    input_string += '+'
+                    if input_string and input_string[-1] not in '+-*/()':  # Проверка на последнюю операцию
+                        input_string += '+'
                     pressed_button = '+'
+                elif 350 <= mouse_x <= 400 and 350 <= mouse_y <= 430:  # Кнопка "-"
+                    if input_string and input_string[-1] not in '+-*/()':  # Проверка на последнюю операцию
+                        input_string += '-'
+                    pressed_button = '-'
+                elif 350 <= mouse_x <= 400 and 250 <= mouse_y <= 330:  # Кнопка "*"
+                    if input_string and input_string[-1] not in '+-*/()':  # Проверка на последнюю операцию
+                        input_string += '*'
+                    pressed_button = '*'
+                elif 350 <= mouse_x <= 400 and 550 <= mouse_y <= 630:  # Кнопка "="
+                    calculate()  # Вычисляем результат при нажатии на "="
+                    pressed_button = '='
 
             if event.type == pygame.MOUSEBUTTONUP:
                 pressed_button = None  # Сбрасываем нажатую кнопку
-
-        calculate()  # Переместил вызов calculate() сюда, чтобы результат обновлялся после обработки событий
 
         pygame.display.flip()
 

@@ -27,7 +27,7 @@ def draw_buttons(mouse_pos):
         ('0', 150, 450), ('+', 250, 450),  # Кнопка сложения
         ('²', 50, 450), ('√', 350, 450),  # Кнопка возведения в квадрат и корня
         ('(', 50, 550), (')', 150, 550),  # Кнопки для скобок
-        ('C', 250, 550)  # Кнопка "Стереть"
+        ('C', 250, 550), ('=', 350, 550)  # Кнопка "Стереть" и "="
     ]
     for (text, x, y) in buttons:
         button_rect = pygame.Rect(x, y, 80, 80)
@@ -63,7 +63,7 @@ def calculate():
         # Используем eval для вычисления выражения
         result_string = str(eval(expression))  # Вычисляем результат
     except Exception as e:
-        result_string = ""  # Отображаем сообщение об ошибке
+        result_string = "Ошибка"  # Отображаем сообщение об ошибке
 
 def main():
     global input_string, result_string, pressed_button
@@ -94,7 +94,7 @@ def main():
                     input_string += '9'
                     pressed_button = '9'
                 elif 350 <= mouse_x <= 400 and 150 <= mouse_y <= 230:
-                    if input_string and input_string[-1] not in '+-*/²√(':  # Проверка на последнюю операцию
+                    if input_string and input_string[-1] not in '()':  # Проверка на последнюю операцию
                         input_string += '/'
                     pressed_button = '/'
                 elif 50 <= mouse_x <= 130 and 250 <= mouse_y <= 330:
@@ -136,22 +136,23 @@ def main():
                     input_string = ""
                     pressed_button = 'C'
                 elif 250 <= mouse_x <= 330 and 450 <= mouse_y <= 530:  # Кнопка "+"
-                    if input_string and input_string[-1] not in '+-*/²√(':  # Проверка на последнюю операцию
+                    if input_string and input_string[-1] not in '+-*/()':  # Проверка на последнюю операцию
                         input_string += '+'
                     pressed_button = '+'
                 elif 350 <= mouse_x <= 400 and 350 <= mouse_y <= 430:  # Кнопка "-"
-                    if input_string and input_string[-1] not in '+-*/²√(':  # Проверка на последнюю операцию
+                    if input_string and input_string[-1] not in '+-*/()':  # Проверка на последнюю операцию
                         input_string += '-'
                     pressed_button = '-'
                 elif 350 <= mouse_x <= 400 and 250 <= mouse_y <= 330:  # Кнопка "*"
-                    if input_string and input_string[-1] not in '+-*/²√(':  # Проверка на последнюю операцию
+                    if input_string and input_string[-1] not in '+-*/()':  # Проверка на последнюю операцию
                         input_string += '*'
                     pressed_button = '*'
+                elif 350 <= mouse_x <= 400 and 550 <= mouse_y <= 630:  # Кнопка "="
+                    calculate()  # Вычисляем результат при нажатии на "="
+                    pressed_button = '='
 
             if event.type == pygame.MOUSEBUTTONUP:
                 pressed_button = None  # Сбрасываем нажатую кнопку
-
-        calculate()  # Переместил вызов calculate() сюда, чтобы результат обновлялся после обработки событий
 
         pygame.display.flip()
 

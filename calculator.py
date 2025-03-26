@@ -5,7 +5,7 @@ import math
 pygame.init()
 
 WIDTH, HEIGHT = 500, 650
-WHITE = (209,238,238)
+WHITE = (209, 238, 238)
 BLACK = (171, 178, 191)
 FONT_COLOR = (0, 0, 0)
 HOVER_COLOR = (128, 138, 135)  # цвет кнопки при наведении
@@ -25,7 +25,9 @@ pressed_button = None  # Переменная для хранения нажат
 def draw_buttons(mouse_pos):
     buttons = [
         ('7', 50, 150), ('8', 150, 150), ('9', 250, 150), ('÷', 350, 150),  # Знак деления
+        ('.', 450, 150),  # Кнопка для десятичной точки
         ('4', 50, 250), ('5', 150, 250), ('6', 250, 250), ('×', 350, 250),  # Изменено на '×'
+        ('←', 450, 250),  # Кнопка для удаления последнего символа
         ('1', 50, 350), ('2', 150, 350), ('3', 250, 350), ('-', 350, 350),
         ('0', 150, 450), ('+', 250, 450),  # Кнопка сложения
         ('²', 50, 450), ('√', 350, 450),  # Кнопка возведения в квадрат и корня
@@ -101,6 +103,10 @@ def main():
                     if input_string and input_string[-1] not in '+-*/(':  # Если последний символ не оператор
                         input_string += '÷'  # Изменено на '÷'
                     pressed_button = '÷'
+                elif 450 <= mouse_x <= 530 and 150 <= mouse_y <= 230:  # Кнопка для точки
+                    if '.' not in input_string:  # Проверяем, есть ли уже точка в строке
+                        input_string += '.'  # Добавляем точку
+                    pressed_button = '.'
                 elif 50 <= mouse_x <= 130 and 250 <= mouse_y <= 330:
                     input_string += '4'
                     pressed_button = '4'
@@ -110,6 +116,9 @@ def main():
                 elif 250 <= mouse_x <= 330 and 250 <= mouse_y <= 330:
                     input_string += '6'  # Добавляем 6
                     pressed_button = '6'
+                elif 450 <= mouse_x <= 530 and 250 <= mouse_y <= 330:  # Кнопка для удаления последнего символа
+                    input_string = input_string[:-1]  # Удаляем последний символ
+                    pressed_button = '←'
                 elif 50 <= mouse_x <= 130 and 350 <= mouse_y <= 430:
                     input_string += '1'
                     pressed_button = '1'

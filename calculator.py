@@ -5,7 +5,7 @@ import math
 pygame.init()
 
 WIDTH, HEIGHT = 500, 650
-WHITE = (255, 255, 255)
+WHITE = (209,238,238)
 BLACK = (171, 178, 191)
 FONT_COLOR = (0, 0, 0)
 HOVER_COLOR = (128, 138, 135)  # цвет кнопки при наведении
@@ -15,14 +15,17 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Калькулятор")
 font = pygame.font.Font(None, 48)
 
+# Загрузка изображения фона
+background_image = pygame.image.load("i.webp")  # Замените "background.jpg" на имя вашего файла
+
 input_string = ""
 result_string = ""
 pressed_button = None  # Переменная для хранения нажатой кнопки
 
 def draw_buttons(mouse_pos):
     buttons = [
-        ('7', 50, 150), ('8', 150, 150), ('9', 250, 150), ('/', 350, 150),
-        ('4', 50, 250), ('5', 150, 250), ('6', 250, 250), ('*', 350, 250),
+        ('7', 50, 150), ('8', 150, 150), ('9', 250, 150), ('÷', 350, 150),  # Знак деления
+        ('4', 50, 250), ('5', 150, 250), ('6', 250, 250), ('×', 350, 250),  # Изменено на '×'
         ('1', 50, 350), ('2', 150, 350), ('3', 250, 350), ('-', 350, 350),
         ('0', 150, 450), ('+', 250, 450),  # Кнопка сложения
         ('²', 50, 450), ('√', 350, 450),  # Кнопка возведения в квадрат и корня
@@ -53,8 +56,8 @@ def draw_buttons(mouse_pos):
 def calculate():
     global input_string, result_string
     try:
-        # Заменяем '²' на '**2' и '√' на 'math.sqrt' для использования в eval
-        expression = input_string.replace('²', '**2').replace('√', 'math.sqrt(')
+        # Заменяем '²' на '**2', '√' на 'math.sqrt', '÷' на '/' и '×' на '*' для использования в eval
+        expression = input_string.replace('²', '**2').replace('√', 'math.sqrt(').replace('÷', '/').replace('×', '*')
         
         # Закрываем все открытые скобки
         if expression.count('(') > expression.count(')'):
@@ -68,7 +71,7 @@ def calculate():
 def main():
     global input_string, result_string, pressed_button
     while True:
-        screen.fill(BLACK)
+        screen.blit(background_image, (0, 0))  # Отображаем изображение фона
         mouse_pos = pygame.mouse.get_pos()  # Получаем позицию мыши
         draw_buttons(mouse_pos)
 
@@ -94,9 +97,10 @@ def main():
                     input_string += '9'
                     pressed_button = '9'
                 elif 350 <= mouse_x <= 400 and 150 <= mouse_y <= 230:
-                    if input_string and input_string[-1] not in '()':  # Проверка на последнюю операцию
-                        input_string += '/'
-                    pressed_button = '/'
+                    # Проверяем, можно ли добавить деление
+                    if input_string and input_string[-1] not in '+-*/(':  # Если последний символ не оператор
+                        input_string += '÷'  # Изменено на '÷'
+                    pressed_button = '÷'
                 elif 50 <= mouse_x <= 130 and 250 <= mouse_y <= 330:
                     input_string += '4'
                     pressed_button = '4'
@@ -140,13 +144,19 @@ def main():
                         input_string += '+'
                     pressed_button = '+'
                 elif 350 <= mouse_x <= 400 and 350 <= mouse_y <= 430:  # Кнопка "-"
-                    if input_string and input_string[-1] not in '+-*/()':  # Проверка на последнюю операцию
-                        input_string += '-'
+                    # Проверяем, можно ли добавить минус
+                    if not input_string or input_string[-1] in '+*/(':  # Если строка пустая или последний символ оператор
+                        input_string += '-'  # Добавляем минус
+                    elif input_string and input_string[-1].isdigit():  # Если перед минусом стоит число
+                        input_string += '-'  # Добавляем минус после числа
+                    # Проверяем, чтобы не добавлять минус, если он уже есть в конце
+                    elif input_string and input_string[-1] == '-':
+                        pass  # Не добавляем минус, если он уже есть
                     pressed_button = '-'
-                elif 350 <= mouse_x <= 400 and 250 <= mouse_y <= 330:  # Кнопка "*"
-                    if input_string and input_string[-1] not in '+-*/()':  # Проверка на последнюю операцию
-                        input_string += '*'
-                    pressed_button = '*'
+                elif 350 <= mouse_x <= 400 and 250 <= mouse_y <= 330:  # Кнопка "×"
+                    if input_string and input_string[-1] not in '+-÷()':  # Проверка на последнюю операцию
+                        input_string += '×'  # Изменено на '×'
+                    pressed_button = '×'
                 elif 350 <= mouse_x <= 400 and 550 <= mouse_y <= 630:  # Кнопка "="
                     calculate()  # Вычисляем результат при нажатии на "="
                     pressed_button = '='

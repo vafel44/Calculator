@@ -10,17 +10,20 @@ BLACK = (171, 178, 191)
 FONT_COLOR = (0, 0, 0)
 HOVER_COLOR = (128, 138, 135)  # цвет кнопки при наведении
 PRESS_COLOR = (128, 128, 128)  # цвет кнопки при нажатии
+AUTO_COLOR_ON = (0, 255, 0)  # цвет кнопки при включенном автоматическом выводе
+AUTO_COLOR_OFF = (255, 0, 0)  # цвет кнопки при выключенном автоматическом выводе
 
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Калькулятор")
 font = pygame.font.Font(None, 48)
 
 # Загрузка изображения фона
-background_image = pygame.image.load("i.webp")  # Замените "background.jpg" на имя вашего файла
+background_image = pygame.image.load("i.webp")  # Замените "i.webp" на имя вашего файла
 
 input_string = ""
 result_string = ""
 pressed_button = None  # Переменная для хранения нажатой кнопки
+auto_output_enabled = False  # Переменная для отслеживания состояния автоматического вывода
 
 def draw_buttons(mouse_pos):
     buttons = [
@@ -33,7 +36,9 @@ def draw_buttons(mouse_pos):
         ('²', 50, 450), ('√', 350, 450),
         ('(', 50, 550), (')', 150, 550),
         ('C', 250, 550), ('=', 350, 550),  # Кнопка "Стереть" и "="
-        ('^', 450, 550)  # Кнопка для возведения в степень
+        ('^', 450, 550),  # Кнопка для возведения в степень
+        ('π', 450, 350),   # Кнопка для числа π
+        ('Auto', 450, 450)  # Новая кнопка для автоматического вывода под π
     ]
     for (text, x, y) in buttons:
         button_rect = pygame.Rect(x, y, 80, 80)
@@ -52,9 +57,15 @@ def draw_buttons(mouse_pos):
         if pressed_button == text:
             pygame.draw.rect(screen, PRESS_COLOR, button_rect)  # Цвет при нажатии
 
-        # Рисуем текст
+        # Изменяем цвет кнопки "Auto" в зависимости от состояния
+        if text == 'Auto':
+            color = AUTO_COLOR_ON if auto_output_enabled else AUTO_COLOR_OFF
+            pygame.draw.rect(screen, color, button_rect)  # Цвет кнопки "Auto"
+
+        # Рисуем текст по центру кнопки
         button_text = font.render(text, True, FONT_COLOR)
-        screen.blit(button_text, (x + 30, y + 20))
+        text_rect = button_text.get_rect(center=button_rect.center)  # Центрируем текст
+        screen.blit(button_text, text_rect)
 
 def calculate():
     global input_string, result_string
@@ -70,7 +81,7 @@ def calculate():
         result_string = "Ошибка"  # Отображаем сообщение об ошибке
 
 def main():
-    global input_string, result_string, pressed_button
+    global input_string, result_string, pressed_button, auto_output_enabled
     while True:
         screen.blit(background_image, (0, 0))  # Отображаем изображение фона
         mouse_pos = pygame.mouse.get_pos()  # Получаем позицию мыши
@@ -98,11 +109,12 @@ def main():
                     input_string += '9'
                     pressed_button = '9'
                 elif 350 <= mouse_x <= 400 and 150 <= mouse_y <= 230:
-                    if input_string and input_string[-1] not in '+-*/(':  # Если последний символ не оператор
+                    if input_string and input_string[-1] != '÷' and input_string[-1] not in '+-*/(':  # Если последний символ не деление и не оператор
                         input_string += '÷'
                     pressed_button = '÷'
                 elif 450 <= mouse_x <= 530 and 150 <= mouse_y <= 230:
-                    if '.' not in input_string:
+                    # Проверяем, можно ли добавить десятичную точку
+                    if input_string and input_string[-1] != '.':  # Проверяем, что последним символом не точка
                         input_string += '.'
                     pressed_button = '.'
                 elif 50 <= mouse_x <= 130 and 250 <= mouse_y <= 330:
@@ -169,9 +181,19 @@ def main():
                     if result_string:  # Проверяем, есть ли результат
                         input_string = result_string  # Очищаем строку ввода и ставим результат
                     pressed_button = '^'
+                elif 450 <= mouse_x <= 530 and 350 <= mouse_y <= 430:  # Кнопка "π"
+                    input_string += '3.14'
+                    pressed_button = 'π'
+                elif 450 <= mouse_x <= 530 and 450 <= mouse_y <= 530:  # Кнопка "Auto"
+                    auto_output_enabled = not auto_output_enabled  # Переключаем состояние автоматического вывода
+                    pressed_button = 'Auto'
 
             if event.type == pygame.MOUSEBUTTONUP:
                 pressed_button = None  # Сбрасываем нажатую кнопку
+
+        # Если автоматический вывод включен, вычисляем результат
+        if auto_output_enabled:
+            calculate()
 
         pygame.display.flip()
 

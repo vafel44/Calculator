@@ -36,7 +36,6 @@ def draw_buttons(mouse_pos):
         ('²', 50, 450), ('√', 350, 450),
         ('(', 50, 550), (')', 150, 550),
         ('C', 250, 550), ('=', 350, 550),
-        ('^', 450, 550),
         ('π', 450, 350),
         ('Auto', 450, 450)
     ]
@@ -148,8 +147,6 @@ def main():
                     elif button_text == 'Auto':
                         global auto_output_enabled
                         auto_output_enabled = not auto_output_enabled
-                    elif button_text == '^' and result_string:
-                        input_string = result_string
                     elif button_text in ('+', '-', '×', '÷') and not input_string:
                         if button_text == '-':
                             input_string += button_text

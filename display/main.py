@@ -35,6 +35,6 @@ class Display:
             
             for j in range(5):
                 
-                pygame.draw.rect(self.screen, (100,100,100), (pos[0], pos[1], 100, 100))
+                pygame.draw.rect(self.screen, self.colors['black'], (pos[0] + 10 + 100*i, pos[1] + 10 + 100*j, 80, 80))
+                pygame.draw.rect(self.screen, self.colors['white'], (pos[0] + 100*i, pos[1] + 100*j, 80, 80))
                 
-            pos[1] += 120
